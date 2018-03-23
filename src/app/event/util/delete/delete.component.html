@@ -1,0 +1,14 @@
+<div class="overlay" *ngIf="visible"></div>
+<div class="modal-delete" *ngIf="visible">
+  <div class="row">
+    <div class="col-12">
+      <div>Are you sure to delete this event with name {{event.name}}?</div>
+    </div>
+  </div>
+  <div class="row" *ngIf="visible">
+    <div class="col button-group event-form-actions">
+      <input type="button" (click)='clear()' class="btn btn-danger" value="Delete">
+      <input type="button" (click)='close()' class="btn btn-submit" value="Cancel">
+    </div>
+  </div>
+</div>

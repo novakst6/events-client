@@ -1,0 +1,47 @@
+<div class="overlay" *ngIf="visible"></div>
+<div class="modal-create" *ngIf="visible">
+  <div class="container event-row event-form" *ngIf="eForm">
+    <form [formGroup]="eForm" (ngSubmit)="onSubmit(eForm.value)">
+      <div class="row">
+        <div class="col">
+          <div>Id</div>
+          <input type="text" formControlName="id" class="form-control" readonly>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div>Name</div>
+          <input type="text" formControlName="name" class="form-control" placeholder="Event name">
+          <div class="alert" *ngIf="!eForm.controls['name'].valid && eForm.controls['name'].touched">You must specify a name (max. 50 characters).</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <div>From</div>
+          <input type="datetime" formControlName="from" class="form-control" readonly>
+          <dl-date-time-picker #datetimeFromEdit minuteStep='15' model='dateFrom'></dl-date-time-picker>
+        </div>
+        <div class="col-6">
+          <div>To</div>
+          <input type="datetime" formControlName="to" class="form-control" readonly>
+          <dl-date-time-picker #datetimeToEdit minuteStep='15' model='dateTo'></dl-date-time-picker>
+        </div>
+      </div>
+      <div class="row">
+          <div class="col-12 alert" *ngIf="warn">Invalid date interval!</div>
+        </div>
+      <div class="row">
+        <div class="col">
+          <div>Created</div>
+          <input type="text" formControlName="created" class="form-control" readonly>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col button-group event-form-actions">
+          <input type="submit" class="btn btn-submit" value="Edit" [disabled]="!eForm.valid || warn">
+          <input type="button" (click)="close()" class="btn btn-danger" value="Cancel">
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

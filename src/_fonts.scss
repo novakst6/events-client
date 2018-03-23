@@ -1,0 +1,10 @@
+$blogger-sans-path: "./assets/fonts/BloggerSans-Medium.woff";
+@font-face {
+    font-family: 'BloggerSansMedium';
+    src: local('Blogger Sans'), url($blogger-sans-path) format('woff');
+    font-style: normal;
+    font-weight: normal;
+}
+body {
+    font-family: 'BloggerSansMedium';
+}

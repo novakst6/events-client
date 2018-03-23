@@ -1,0 +1,69 @@
+<app-interval [(visible)]='showIntervalPicker' [(value)]='pickerValue'></app-interval>
+<app-delete  *ngIf="showDeleteDialog" [(event)]="eventToDelete" [(visible)]='showDeleteDialog' [(value)]='deleteValue'></app-delete>
+<app-create [(visible)]='showCreateForm' [(value)]='createValue'></app-create>
+<app-edit *ngIf="showEditForm" [(visible)]='showEditForm' [(event)]="eventToEdit" [(value)]='editValue'></app-edit>
+
+<div class="event-menu row">
+  <div class="col-12 event-menu-actions">
+    <a href="#" class="btn btn-primary event-filter" style='float:left;' (click)='toggleCurrentOrFuture()'>
+      Current &amp; Future
+      <i *ngIf='currentOfFuture' class="fa fa-check"></i>
+      <i *ngIf='!currentOfFuture' class="	fa fa-close"></i>
+    </a>
+    <a href="#" class="btn btn-primary event-filter" style='float:left;' (click)='openIntervalPicker()'>
+        <b>From:</b> {{intervalFromDate | date:'dd. MM. yyyy HH:mm'}} <span *ngIf='!intervalFromDate'>any</span> 
+        <b>To:</b> {{intervalFromDate | date:'dd. MM. yyyy HH:mm'}} <span *ngIf='!intervalToDate'>any</span>
+    </a>
+    <a href="#" (click)="createAction()" class="btn btn-success">Add event</a>
+  </div>
+</div>
+<div class="container event-menu" *ngIf='total || total == 0'>
+  <input type="button" value="<< Prev" class="btn btn-info" [disabled]='hasPrev()' (click)='getPrevPage()'>
+  <span class="btn btn-info">{{ page }}/{{ totalPages }} Total: {{total}}</span>
+  <input type="button" value="Next >>" class="btn btn-info" [disabled]='hasNext()' (click)='getNextPage()'>
+</div>
+<div class="container event-menu-sort" *ngIf='total || total == 0'>
+  <a *ngFor="let sort of sortAttrs" href="#" class="btn btn-warning" (click)='setSort(sort)'>
+    {{sort}}
+    <i *ngIf='isSort(sort) && isAsc()' class="fa fa-chevron-up"></i>
+    <i *ngIf='isSort(sort) && !isAsc()' class="fa fa-chevron-down"></i>
+  </a>
+</div>
+<div class="container event-list">
+  <div class="event-empty" *ngIf='total == 0'>
+    <h3>You have no events to show!</h3>
+  </div>
+  <div class="row event-row" *ngFor="let event of events; let in=index" [ngClass]="categoryEvent(event)">
+    <div class="event-row-action">
+      <a href="#" (click)="editAction(event)">
+        <i class="fa fa-edit"></i>
+      </a>
+      <a href="#" (click)='deleteAction(event)'>
+        <i class="fa fa-trash"></i>
+      </a>
+    </div>
+    <div class="col-10 event-row-name">
+      <b>{{ event.name }}</b>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <span class="badge badge-pill badge-primary">
+        <i class="fa fa-clock-o"></i>
+        <b>From</b>
+      </span> {{ event.fromDate | date:'dd. MM. yyyy HH:mm'}}</div>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <span class="badge badge-pill badge-primary">
+        <i class="fa fa-clock-o"></i>
+        <b>To</b>
+      </span> {{ event.toDate | date:'dd. MM. yyyy HH:mm'}}</div>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <span class="badge badge-pill badge-primary">
+        <i class="fa fa-calendar-plus-o"></i>
+        <b>Created</b>
+      </span> {{ event.created | date:'dd. MM. yyyy HH:mm'}}</div>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <span class="badge badge-pill badge-primary">
+        <i class="fa fa-id-card-o"></i>
+        <b>Id</b>
+      </span> {{ event.id }}</div>
+  </div>
+</div>

@@ -1,0 +1,25 @@
+<div class="overlay" *ngIf="visible"></div>
+<div class="modal-interval" *ngIf="visible">
+<div class="row" *ngIf="visible">
+    <div class="col-6">
+        <div>From</div>
+        <input type="datetime"  class="form-control" value="{{dateFrom.toLocaleString()}}" readonly>
+        <dl-date-time-picker #datetimeFromIP minuteStep='30' model='dateFrom'></dl-date-time-picker>
+      </div>
+    <div class="col-6">
+        <div>To</div>
+        <input type="datetime" class="form-control" value="{{dateTo.toLocaleString()}}" readonly>
+        <dl-date-time-picker #datetimeToIP minuteStep='30' model='dateTo'></dl-date-time-picker>
+    </div>
+</div> 
+<div class="row" *ngIf="visible">
+    <div class="col-12 alert" *ngIf="warn && dateTo && dateFrom">Invalid date interval!</div>
+</div>
+<div class="row" *ngIf="visible">
+    <div class="col button-group event-form-actions">
+    <input type="submit" (click)='update()' class="btn btn-success" value="Update" [disabled]='warn'>
+    <input type="button" (click)='clear()' class="btn btn-danger" value="Clear">
+    <input type="button" (click)='close()' class="btn btn-submit" value="Close">
+  </div>
+</div>
+</div>
