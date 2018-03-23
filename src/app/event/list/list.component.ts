@@ -3,6 +3,7 @@ import { EventService } from '../service/event.service'
 import { Router } from '@angular/router';
 import { Event } from '../model/event';
 import { EventFilter } from '../model/event.filter';
+import { NotificationService } from '../service/notification/notification.service';
 
 @Component({
   selector: 'app-list',
@@ -48,14 +49,23 @@ export class ListComponent implements OnInit {
   public showEditForm: boolean = false
   public eventToEdit: Event
 
-  constructor(private _events: EventService, private _router: Router) {
+  constructor(
+    private _events: EventService, 
+    private _router: Router,
+    private _notifications: NotificationService
+  ) {
     this.page = 1;
     this._filter = new EventFilter()
-    this._filter.sortAttribute = 'FromDate'
+    this._filter.sortAttribute = this.sortAttrs[0]
     this._filter.sortDirection = true
     this._filter.currentOrFuture = 'no'
   }
 
+  ngOnInit() {
+    this.getAllEvents()
+  }
+
+  /* FILTER HANDLERS */ 
   openIntervalPicker(){
     this.showIntervalPicker = true
   }
@@ -75,11 +85,18 @@ export class ListComponent implements OnInit {
     this.reset()
   }
 
-  reset(){
-    this.page = 1
-    this.getEventPage(this.page)
+  toggleCurrentOrFuture(){
+    if(this.currentOfFuture){
+      this.currentOfFuture = false
+      this._filter.currentOrFuture = 'no'
+    } else {
+      this.currentOfFuture = true
+      this._filter.currentOrFuture = 'yes'
+    }
+    this.reset()
   }
 
+  /* SORTING */
   isAsc(){
     return this._filter.sortDirection
   }
@@ -97,21 +114,7 @@ export class ListComponent implements OnInit {
     this.reset()
   }
 
-  toggleCurrentOrFuture(){
-    if(this.currentOfFuture){
-      this.currentOfFuture = false
-      this._filter.currentOrFuture = 'no'
-    } else {
-      this.currentOfFuture = true
-      this._filter.currentOrFuture = 'yes'
-    }
-    this.reset()
-  }
-
-  ngOnInit() {
-    this.getAllEvents()
-  }
-
+  /* PAGINATION */
   getPrevPage(){
     if(!this.hasPrev()){
       this.page -= 1
@@ -144,19 +147,27 @@ export class ListComponent implements OnInit {
     });
   }
 
+  reset(){
+    this.page = 1
+    this.getEventPage(this.page)
+  }
+
   getAllEvents() {
     this.getEventPage(this.page)
   }
 
+  /* EDIT EVENT */ 
   editAction(event){
     this.eventToEdit = event
     this.showEditForm = true
   }
 
+  /* CREATE EVENT */ 
   createAction(){
     this.showCreateForm = true
   }
 
+  /* DELETE EVENT */ 
   deleteAction(event){
     this.eventToDelete = event
     this.showDeleteDialog = true;
@@ -166,13 +177,16 @@ export class ListComponent implements OnInit {
     this.eventToDelete = null
     this._events.delete(id).subscribe(response => {
       console.log('Delete success')
-      this.getAllEvents()
+      this._notifications.showSuccess("Event deleted", "Success")
+      this.reset()
     }, error => {
-      console.log('Delete success')
-      this.getAllEvents()
+      console.log('Delete error')
+      this._notifications.showError("Unable to delete event", "Error")
+      this.reset()
     })
   }
 
+  /* UTILITY */
   categoryEvent(event: Event): string{
     if(new Date(event.toDate).getTime() < Date.now()){
       return 'event-past';

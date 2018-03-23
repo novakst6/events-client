@@ -6,6 +6,7 @@ import { Event } from '../model/event'
 import { ValidTimeInterval } from '../validators/validators';
 import { round, dateFromString, offset } from '../util/util'
 import { Router } from '@angular/router';
+import { NotificationService } from '../service/notification/notification.service';
 
 @Component({
   selector: 'app-create',
@@ -70,7 +71,12 @@ export class CreateComponent implements OnInit, OnDestroy {
     }
   }
   
-  constructor(private _formBuilder: FormBuilder, private _events: EventService, private _router: Router) {
+  constructor(
+    private _formBuilder: FormBuilder, 
+    private _events: EventService, 
+    private _router: Router,
+    private _notifications: NotificationService
+  ) {
     this._time = new Date()
     this.dateFrom = offset(new Date(), 0)
     this.dateTo = offset(new Date(), 1)
@@ -90,9 +96,11 @@ export class CreateComponent implements OnInit, OnDestroy {
     this._model.toDate = dateFromString(post.to)
     this._events.post(this._model).subscribe(response => {
       console.log('save success')
+      this._notifications.showSuccess("Event created","Success")
       this.saved()
     }, error => {
       console.log('save error')
+      this._notifications.showError("Error during save event","Error")
       this.close()
     })
   }

@@ -7,6 +7,7 @@ import { ValidTimeInterval } from '../validators/validators';
 import { Subject } from 'rxjs/Subject';
 import { DlDateTimePickerComponent } from 'angular-bootstrap-datetimepicker';
 import { dateFromString } from '../util/util';
+import { NotificationService } from '../service/notification/notification.service';
 
 @Component({
   selector: 'app-edit',
@@ -83,7 +84,8 @@ export class EditComponent implements OnInit, OnDestroy {
     private _router: Router, 
     private _activtedRoute: ActivatedRoute,
     private _events: EventService,
-    private _formBuilder: FormBuilder  
+    private _formBuilder: FormBuilder,
+    private _notifications: NotificationService
   ) { 
     this._subject = new Subject()
   }
@@ -95,6 +97,7 @@ export class EditComponent implements OnInit, OnDestroy {
         this._subject.next(this._model)
     }, error => {
         console.log('Edit load error')
+        this._notifications.showError("Unable to load event","Error")
         this.close()
     })
   }
@@ -126,9 +129,11 @@ export class EditComponent implements OnInit, OnDestroy {
     this._model.created = dateFromString(post.created)
     this._events.put(this._model.id, this._model).subscribe(response => {
       console.log('edit success')
+      this._notifications.showSuccess("Event updated","Success")
       this.edited()
     }, error => {
       console.log('edit error')
+      this._notifications.showError("Unable update event","Error")
       this.close()
     })
   }
