@@ -67,6 +67,8 @@ export class ListComponent implements OnInit {
       this._filter.fromDate = pickerValue[0]
       this._filter.toDate = pickerValue[1]
     } else {
+      this.intervalFromDate = null
+      this.intervalToDate = null
       delete this._filter.fromDate
       delete this._filter.toDate
     }
